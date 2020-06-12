@@ -1,0 +1,4 @@
+[flake8]
+exclude=env
+max-line-length=140
+ignore=F401
