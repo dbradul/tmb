@@ -28,12 +28,13 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
     path('account/', include('account.urls')),
     path('leaderboard/', LeaderBoardView.as_view(), name='leaderboard'),
-    path('tests/', include(('testsuite.urls', 'tests')))
+    path('testsuites/', include(('testsuite.urls', 'testsuite')))
 ]
 
 
 urlpatterns += \
-    static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 if settings.DEBUG:
     import debug_toolbar

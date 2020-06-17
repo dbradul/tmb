@@ -1,14 +1,18 @@
 from django.contrib import admin
 
 # Register your models here.
-from testsuite.forms import QuestionEditForm
+from django.core.exceptions import ValidationError
+
+from testsuite.forms import QuestionEditForm, VariantInlineFormset
 from testsuite.models import TestSuite, Question, Variant, TestSuiteRun
 
 
 class VariantsInline(admin.TabularInline):
     model = Variant
     fields = ('text', 'correct')
-    show_change_link = True
+    show_change_link = False
+    extra = 0
+    formset = VariantInlineFormset
 
 
 class QuestionAdminModel(admin.ModelAdmin):
@@ -20,16 +24,42 @@ class QuestionAdminModel(admin.ModelAdmin):
     inlines = (VariantsInline,)
     form = QuestionEditForm
 
-    def save_form(self, request, form, change):
-        return super().save_form(request, form, change)
 
-    def num_variant_min_limit(self, instance):
-        return instance.num_variant_min_limit
+    # def save_form(self, request, form, change):
+    #     return super().save_form(request, form, change)
+    #
+    # def save_model(self, request, obj, form, change):
+    #     return super().save_model(request, obj, form, change)
+    #
+    # def save_formset(self, request, form, formset, change):
+    #     variants = []
+    #     for f in formset:
+    #         if f.is_valid():
+    #             instance = f.save(commit=False)
+    #             variants.append(instance)
+    #         else:
+    #             for err in f.errors:
+    #                 f.add_error(None, err)
+    #             # raise f.ValidationError(f.errors)
+    #
+    #     if all([v.correct for v in variants]):
+    #         # raise formset.ValidationError('It is prohibited to set all variant as correct!')
+    #         form.add_error(None, ValidationError('It is prohibited to set all variant as correct!'))
+    #     if not any([v.correct for v in variants]):
+    #         # raise formset.ValidationError('It is prohibited to not set at least variant as correct!')
+    #         form.add_error(None, ValidationError('It is prohibited to not set at least variant as correct!'))
+    #
+    #     if not form.errors:
+    #         return super().save_formset(request, form, formset, change)
+    #
+    #
+    # def save_related(self, request, form, formsets, change):
+    #     return super().save_related(request, form, formsets, change)
 
 
 class QuestionsInline(admin.TabularInline):
     model = Question
-    fields = ('text', ) #'num_variant_min_limit')
+    fields = ('text', )#'num_variant_min_limit')
     show_change_link = True
     extra = 1
 
@@ -51,18 +81,3 @@ admin.site.register(TestSuite, TestSuiteAdminModel)
 admin.site.register(Question, QuestionAdminModel)
 admin.site.register(Variant)
 admin.site.register(TestSuiteRun)
-
-
-#
-# class StudentsInline(admin.TabularInline):
-#     model = Student
-#     readonly_fields = ('birthdate', 'last_name', 'first_name', 'email')
-#     show_change_link = True
-#
-#
-# class GroupAdmin(admin.ModelAdmin):
-#     fields = ['name', 'classroom']
-#     inlines = (StudentsInline,)
-#     list_per_page = 10
-#
-# admin.site.register(Group, GroupAdmin)

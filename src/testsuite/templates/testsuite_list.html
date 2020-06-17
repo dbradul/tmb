@@ -18,6 +18,7 @@
                   <th>Title</th>
                   <th>Description</th>
                   <th>Level</th>
+                  <th></th>
                 </tr>
 
               </thead>
@@ -25,10 +26,10 @@
             {% for ts in object_list %}
                 <tr>
                     <td><img class="rounded-circle p-1 m-1" width="150" height="150"  src="{{ ts.image.url }}"></td>
-                    <td> {{ ts.id }}</td>
+                    <td> {{ ts.title }}</td>
                     <td> {{ ts.description }}</td>
                     <td> {{ ts.level }}</td>
-                    <td> <a href="{% url 'start_test' object.id %}">START</a></td>
+                    <td> <a href="{% url 'testsuite:start' ts.id %}">START</a></td>
                 </tr>
             {% endfor %}
         </table>
