@@ -5,40 +5,11 @@ from django.forms import widgets
 from testsuite.models import Question, Test
 
 
-
-
-class TestRunForm(Form):
-    # model = Question
-    answer_variant = fields.CharField(label='Answer variant', required=False)
-    answer_selection = fields.BooleanField(label='Answer selection', initial=False, required=False)
-
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['description'].disabled = True
-    #     self.fields['text'].disabled = True
-    #     self.fields['number'].disabled = True
-        # self.fields['description'].widget.attrs['readonly'] = True
-
-    def clean(self):
-        pass
-
-
 class QuestionForm(ModelForm):
     model = Question
 
     class Meta:
-        fields = ['description', 'text', 'number']#'__all__'
-        # exclude =
-        widgets = {'description': widgets.Textarea(
-            attrs={'placeholder': 'Please enter your text...'}
-        )}
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['description'].disabled = True
-        self.fields['text'].disabled = True
-        self.fields['number'].disabled = True
-        # self.fields['description'].widget.attrs['readonly'] = True
+        fields = '__all__'
 
     def clean(self):
         pass
