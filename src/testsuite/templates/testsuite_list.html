@@ -29,7 +29,7 @@
                     <td> {{ ts.title }}</td>
                     <td> {{ ts.description }}</td>
                     <td> {{ ts.level }}</td>
-                    <td> <a href="{% url 'testsuite:start' ts.id %}">START</a></td>
+                    <td> <a href="{% url 'test:start' ts.id %}">START</a></td>
                 </tr>
             {% endfor %}
         </table>

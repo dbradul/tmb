@@ -1,6 +1,6 @@
 {#{% load static %}#}
 {% load static %}
-{% url 'testsuite:list' as testsuite_url %}
+{% url 'test:list' as testsuite_url %}
 {% url 'leaderboard' as leaderboard_url %}
 {% url 'profile' as profile_url %}
 {% url 'login' as login_url %}
@@ -40,10 +40,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item {% if request.path == testsuite_url %} active {%endif%}">
-                        <a class="nav-link" href="{% url 'testsuite:list' %}">Test Suites <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="{{ testsuite_url }}">Test Suites <span class="sr-only">(current)</span></a>
                     </li>
-                    <li class="nav-item {% if request.path == testsuite_url %} active {%endif%}">
-                        <a class="nav-link" href="{% url 'leaderboard' %}">Leader Board</a>
+                    <li class="nav-item {% if request.path == leaderboard_url %} active {%endif%}">
+                        <a class="nav-link" href="{{ leaderboard_url }}">Leader Board</a>
                     </li>
                 </ul>
 

@@ -11,8 +11,16 @@
     <form method="post">
         {% csrf_token %}
 {#        {{ form|crispy }}#}
-        {{ formset.management_form|crispy }}
-        {{ formset|crispy }}
+{#        {{ formset.management_form|crispy }}#}
+{#        {{ formset.as_table}}#}
+{#        {% crispy formset %}#}
+{#        {{ formset|crispy }}#}
+        {% for form in formset %}
+            <div class="checkbox">
+              <label><input type="checkbox" value="1">   {{ form.answer_variant.value }}</label>
+            </div>
+        {% endfor %}
+{#         }}#}
 
         <button type="submit" class="btn btn-success">Save</button>
 {#        <a href="{% url 'students:list' %}" class="btn btn-light">Cancel</a>#}

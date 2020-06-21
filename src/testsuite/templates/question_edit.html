@@ -3,7 +3,7 @@
 
 {% block title %}
     {{ block.super }}
-    Question <b>{{ question.text }}</b>
+    Question #{{ question.number }}: <b>{{ question.text }}</b> ?
 {% endblock %}
 
 
@@ -11,10 +11,10 @@
     <form method="post">
         {% csrf_token %}
 {#        {{ form|crispy }}#}
-        {{ formset.management_form|crispy }}
+{#        {{ formset.management_form|crispy }}#}
         {{ formset|crispy }}
 
-{#        <button type="submit" class="btn btn-success">Save</button>#}
+        <button type="submit" class="btn btn-success">Save</button>
         <div class="col-md-2 text-left">
             <a href="{{ question.prev }}" class="btn btn-light"><< Previous</a>
         </div>

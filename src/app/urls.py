@@ -28,7 +28,7 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
     path('account/', include('account.urls')),
     path('leaderboard/', LeaderBoardView.as_view(), name='leaderboard'),
-    path('testsuites/', include(('testsuite.urls', 'testsuite')))
+    path('tests/', include('testsuite.urls'))
 ]
 
 

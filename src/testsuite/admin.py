@@ -3,26 +3,26 @@ from django.contrib import admin
 # Register your models here.
 from django.core.exceptions import ValidationError
 
-from testsuite.forms import QuestionEditForm, VariantInlineFormset
-from testsuite.models import TestSuite, Question, Variant, TestSuiteRun
+from testsuite.forms import QuestionForm, VariantInlineFormset
+from testsuite.models import Test, Question, Answer, TestRun
 
 
-class VariantsInline(admin.TabularInline):
-    model = Variant
-    fields = ('text', 'correct')
+class AnswersInline(admin.TabularInline):
+    model = Answer
+    fields = ('text', 'is_correct')
     show_change_link = False
     extra = 0
     formset = VariantInlineFormset
 
 
 class QuestionAdminModel(admin.ModelAdmin):
-    list_display = ('text', 'description', 'test_suite')
-    list_select_related = ('test_suite',)
+    list_display = ('number', 'text', 'description', 'test')
+    list_select_related = ('test',)
     # readonly_fields = ('num_variant_min_limit', )
     list_per_page = 10
     search_fields = ('first_name',)
-    inlines = (VariantsInline,)
-    form = QuestionEditForm
+    inlines = (AnswersInline,)
+    form = QuestionForm
 
 
     # def save_form(self, request, form, change):
@@ -70,14 +70,14 @@ class QuestionsInline(admin.TabularInline):
 #     search_fields = ('first_name',)
 
 
-class TestSuiteAdminModel(admin.ModelAdmin):
+class TestAdminModel(admin.ModelAdmin):
     fields = ('title', 'description', 'level', 'image')
     list_display = ('title', 'description', 'level', 'image')
     list_per_page = 10
     inlines = (QuestionsInline,)
 
 
-admin.site.register(TestSuite, TestSuiteAdminModel)
+admin.site.register(Test, TestAdminModel)
 admin.site.register(Question, QuestionAdminModel)
-admin.site.register(Variant)
-admin.site.register(TestSuiteRun)
+admin.site.register(Answer)
+admin.site.register(TestRun)
