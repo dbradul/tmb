@@ -1,10 +1,6 @@
-from django.core.exceptions import ValidationError
-from django.forms import inlineformset_factory, formset_factory, modelformset_factory
 from django.shortcuts import render, redirect
-
-# Create your views here.
 from django.urls import reverse
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView
 from django.views.generic.base import View
 
 from account.models import User
@@ -23,27 +19,21 @@ class LeaderBoardView(ListView):
 
 
 class TestRunView(View):
-
     def get(self, request, pk, seq_nr):
-        testsuite = Test.objects.get(pk=pk)
         question = Question.objects.filter(test__id=pk, number=seq_nr).first()
 
-        answers = Answer.objects.filter(
-            question=question
-        ).all()
-
-        data = [
+        answers = [
             answer.text
-            for answer in answers
+            for answer in question.answers.all()
         ]
 
         return render(
             request=request,
-            template_name='testrundetail_edit.html',
+            template_name='testrun.html',
             context={
                 'question': question,
-                'data': data,
-            },
+                'answers': answers
+            }
         )
 
     def post(self, request, pk, seq_nr):
@@ -57,6 +47,7 @@ class TestRunView(View):
         # logic...
 
         return redirect(reverse('test:testrun_step', kwargs={'pk':pk, 'seq_nr': seq_nr+1}))
+
 
 
 class StartTestView(View):

@@ -1,9 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
-from django.core.exceptions import ValidationError
-
-from testsuite.forms import QuestionForm, VariantInlineFormset
+from testsuite.forms import (
+    TestForm,
+    QuestionsInlineFormSet,
+    QuestionsInlineForm,
+    AnswerInlineFormset
+)
 from testsuite.models import Test, Question, Answer, TestRun
 
 
@@ -12,7 +14,7 @@ class AnswersInline(admin.TabularInline):
     fields = ('text', 'is_correct')
     show_change_link = False
     extra = 0
-    formset = VariantInlineFormset
+    formset = AnswerInlineFormset
 
 
 class QuestionAdminModel(admin.ModelAdmin):
@@ -21,14 +23,16 @@ class QuestionAdminModel(admin.ModelAdmin):
     list_per_page = 10
     search_fields = ('first_name',)
     inlines = (AnswersInline,)
-    form = QuestionForm
+    # form = QuestionForm
 
 
 class QuestionsInline(admin.TabularInline):
     model = Question
-    fields = ('text', )
+    fields = ('text', 'number')
     show_change_link = True
-    extra = 1
+    extra = 0
+    form = QuestionsInlineForm
+    formset = QuestionsInlineFormSet
 
 
 class TestAdminModel(admin.ModelAdmin):
@@ -36,6 +40,7 @@ class TestAdminModel(admin.ModelAdmin):
     list_display = ('title', 'description', 'level', 'image')
     list_per_page = 10
     inlines = (QuestionsInline,)
+    form = TestForm
 
 
 admin.site.register(Test, TestAdminModel)
