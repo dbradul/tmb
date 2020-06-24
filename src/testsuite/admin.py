@@ -6,7 +6,7 @@ from testsuite.forms import (
     QuestionsInlineForm,
     AnswerInlineFormset
 )
-from testsuite.models import Test, Question, Answer, TestRun
+from testsuite.models import Test, Question, Answer, TestResult
 
 
 class AnswersInline(admin.TabularInline):
@@ -23,7 +23,6 @@ class QuestionAdminModel(admin.ModelAdmin):
     list_per_page = 10
     search_fields = ('first_name',)
     inlines = (AnswersInline,)
-    # form = QuestionForm
 
 
 class QuestionsInline(admin.TabularInline):
@@ -46,4 +45,4 @@ class TestAdminModel(admin.ModelAdmin):
 admin.site.register(Test, TestAdminModel)
 admin.site.register(Question, QuestionAdminModel)
 admin.site.register(Answer)
-admin.site.register(TestRun)
+admin.site.register(TestResult)
