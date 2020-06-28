@@ -1,7 +1,7 @@
 import datetime
 
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import ListView
@@ -32,7 +32,6 @@ class TestRunView(View):
         testresult_step = request.session.get('testresult_step', 1)
         request.session['testresult_step'] = testresult_step
 
-        # question = Question.objects.filter(test__id=pk, number=testresult_step).first()
         question = Question.objects.get(test__id=pk, number=testresult_step)
 
         answers = [
@@ -42,7 +41,7 @@ class TestRunView(View):
 
         return render(
             request=request,
-            template_name='testrun.html',
+            template_name='testrun_next.html',
             context={
                 'question': question,
                 'answers': answers,
@@ -57,7 +56,6 @@ class TestRunView(View):
         testresult_step = request.session['testresult_step']
 
         test = Test.objects.get(pk=pk)
-        # question = Question.objects.filter(test__id=pk, number=testresult_step).first()
         question = Question.objects.get(test__id=pk, number=testresult_step)
 
         answers = Answer.objects.filter(
