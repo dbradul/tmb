@@ -70,13 +70,13 @@ class TestResult(models.Model):
 
     datetime_run = models.DateTimeField(auto_now_add=True)
     is_completed = models.BooleanField(default=False)
-
+    is_new = models.BooleanField(default=True)
     avr_score = models.DecimalField(default=0.0, decimal_places=2, max_digits=5,
                                     validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     def update_score(self):
         qs = self.test_result_details.values('question').annotate(
-            num_answers=Count('question'),
+            num_answers=Count('answer'),
             score=Sum('is_correct')
         )
         self.avr_score = sum(
@@ -86,7 +86,7 @@ class TestResult(models.Model):
 
     def finish(self):
         self.update_score()
-        self.is_complete = True
+        self.is_completed = True
 
     def __str__(self):
         return f'{self.test.title}, {self.user.full_name()}, {self.datetime_run}'
@@ -100,3 +100,9 @@ class TestResultDetail(models.Model):
 
     def __str__(self):
         return f'Test Run: {self.test_result.id}, Question: {self.question.text}, Success: {self.is_correct}'
+
+#
+# class TestSale(models.Model):
+#     store_id = models.PositiveSmallIntegerField()
+#     sold_on = models.DateField(auto_now_add=True)
+#     sum = models.DecimalField(max_digits=6, decimal_places=2)

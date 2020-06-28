@@ -1,6 +1,7 @@
 import datetime
 
 from django.contrib import messages
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import ListView
@@ -24,8 +25,15 @@ class LeaderBoardView(ListView):
 class TestRunView(View):
     PREFIX = 'answer_'
 
-    def get(self, request, pk, seq_nr):
-        question = Question.objects.filter(test__id=pk, number=seq_nr).first()
+    def get(self, request, pk):
+        if 'testresult' not in request.session:
+            return HttpResponse('ERROR!')
+
+        testresult_step = request.session.get('testresult_step', 1)
+        request.session['testresult_step'] = testresult_step
+
+        # question = Question.objects.filter(test__id=pk, number=testresult_step).first()
+        question = Question.objects.get(test__id=pk, number=testresult_step)
 
         answers = [
             answer.text
@@ -42,9 +50,15 @@ class TestRunView(View):
             }
         )
 
-    def post(self, request, pk, seq_nr):
+    def post(self, request, pk):
+        if 'testresult_step' not in request.session:
+            return HttpResponse('ERROR!')
+
+        testresult_step = request.session['testresult_step']
+
         test = Test.objects.get(pk=pk)
-        question = Question.objects.filter(test__id=pk, number=seq_nr).first()
+        # question = Question.objects.filter(test__id=pk, number=testresult_step).first()
+        question = Question.objects.get(test__id=pk, number=testresult_step)
 
         answers = Answer.objects.filter(
             question=question
@@ -57,12 +71,15 @@ class TestRunView(View):
 
         if not choices:
             messages.error(self.request, extra_tags='danger', message="ERROR: You should select at least 1 answer!")
-            return redirect(reverse('test:testrun_step', kwargs={'pk': pk, 'seq_nr': seq_nr}))
+            return redirect(reverse('test:next', kwargs={'pk': pk}))
 
-        current_test_result = TestResult.objects.filter(
-            test=test,
-            user=request.user,
-            is_completed=False).last()
+        if len(choices) == len(answers):
+            messages.error(self.request, extra_tags='danger', message="ERROR: You can't select ALL answer!")
+            return redirect(reverse('test:next', kwargs={'pk': pk}))
+
+        current_test_result = TestResult.objects.get(
+            id=request.session['testresult']
+        )
 
         for idx, answer in enumerate(answers, 1):
             value = choices.get(str(idx), False)
@@ -74,8 +91,13 @@ class TestRunView(View):
             )
 
         if question.number < test.questions_count():
-            return redirect(reverse('test:testrun_step', kwargs={'pk': pk, 'seq_nr': seq_nr+1}))
+            current_test_result.is_new = False
+            current_test_result.save()
+            request.session['testresult_step'] = testresult_step + 1
+            return redirect(reverse('test:next', kwargs={'pk': pk}))
         else:
+            del request.session['testresult']
+            del request.session['testresult_step']
             current_test_result.finish()
             current_test_result.save()
             return render(
@@ -91,12 +113,19 @@ class TestRunView(View):
 class StartTestView(View):
 
     def get(self, request, pk):
-        test = Test.objects.get(pk=pk)
+        test = Test.objects.get(id=pk)
 
-        test_result = TestResult.objects.create(
-            user=request.user,
-            test=test
-        )
+        test_result_id = request.session.get('testresult')
+
+        if test_result_id:
+            test_result = TestResult.objects.get(id=test_result_id)
+        else:
+            test_result = TestResult.objects.create(
+                user=request.user,
+                test=test
+            )
+
+        request.session['testresult'] = test_result.id
 
         return render(
             request=request,
