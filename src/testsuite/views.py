@@ -2,8 +2,9 @@ import datetime
 
 from django.contrib import messages
 from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.base import View
 
@@ -14,12 +15,16 @@ from testsuite.models import Test, Question, Answer, TestResult, TestResultDetai
 class TestSuiteListView(ListView):
     model = Test
     template_name = 'testsuite_list.html'
+    queryset = Test.objects.order_by('id').all()
     paginate_by = 5
 
 
-class LeaderBoardView(ListView):
+class LeaderBoardView(LoginRequiredMixin, ListView):
     model = User
+    queryset = User.objects.order_by('-avr_score').all()
     paginate_by = 5
+    template_name = 'leaderboard.html'
+    login_url = reverse_lazy('login')
 
 
 class TestRunView(View):

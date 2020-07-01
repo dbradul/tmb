@@ -5,7 +5,7 @@
 
 {% block title %}
     {{ block.super }}
-    Test list
+    Leaderboard
 {% endblock %}
 
 {% block content %}
@@ -17,22 +17,22 @@
 
                 <tr>
                   <th></th>
-                  <th>Title</th>
-                  <th>Description</th>
-                  <th>Level</th>
+                  <th>Full name</th>
+                  <th>Points</th>
+                  <th>Success rate</th>
                   <th></th>
                 </tr>
 
               </thead>
 
-            {% for ts in object_list %}
+            {% for user in object_list %}
                 <tr>
-                    <td><img class="rounded-circle p-1 m-1" width="150" height="150"  src="{{ ts.image.url }}"></td>
-                    <td> {{ ts.title }}</td>
-                    <td> {{ ts.description }}</td>
-                    <td> {{ ts.level }}</td>
+                    <td><img class="rounded-circle p-1 m-1" width="150" height="150"  src="{{ user.image.url }}"></td>
+                    <td> {{ user.full_name }}</td>
+                    <td> {{ user.points }}</td>
+                    <td> {{ user.score_info }}</td>
 {#                    <td> <img src="{% static 'common/level_.png' %}" height="30px" width="40px"/> </td>#}
-                    <td> <a href="{% url 'test:start' ts.id %}">START</a></td>
+{#                    <td> <a href="{% url 'test:start' ts.id %}">START</a></td>#}
                 </tr>
             {% endfor %}
         </table>
@@ -42,7 +42,7 @@
         </div>
 
     {% else %}
-        <p>No tests yet :(</p>
+        <p>No users yet :(</p>
     {% endif %}
 
 {% endblock %}
