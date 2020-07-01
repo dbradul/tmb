@@ -1,25 +1,45 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
+from django.core.management import call_command
 from django.urls import reverse
 from django.test import TestCase
 from django.test import Client
 
+from testsuite.models import Test
 
-class UrlsAvailabilityTests(TestCase):
+PK = 1
+
+class BaseFlowTest(TestCase):
 
     def setUp(self):
+        call_command('loaddata', 'tests/fixtures/accounts.json', verbosity=0)
+        call_command('loaddata', 'tests/fixtures/tests.json', verbosity=0)
         self.client = Client()
+        self.client.login(username='admin', password='admin')
 
-    def test_public_url(self):
-        response = self.client.get(reverse('index'))
+    def test_basic_flow(self):
+        response = self.client.get(reverse('test:start', kwargs={'pk': PK}))
         assert response.status_code == 200
-        assert 'Welcome to TMB!' in response.content.decode()
+        assert 'START ▶' in response.content.decode()
 
-        response = self.client.get(reverse('test:list'))
-        assert response.status_code == 200
-        assert 'Test list' in response.content.decode()
+        test = Test.objects.get(pk=PK)
+        questions_count = test.questions_count()
+        url = reverse('test:next', kwargs={'pk': PK})
 
-    def test_private_urls(self):
-        response = self.client.get(reverse('leaderboard'))
-        assert response.url.startswith(reverse('login'))
-        assert response.status_code == 302
+        for step in range(1, questions_count+1):
+            response = self.client.get(url)
+            assert response.status_code == 200
+            assert 'Submit' in response.content.decode()
+            response = self.client.post(
+                path=url,
+                data={
+                    'answer_1': "1"
+                }
+            )
+            if step == questions_count:
+                assert response.status_code == 200
+            else:
+                assert response.status_code == 302
+                assert response.url == url
+
+        assert 'START ANOTHER TEST ▶' in response.content.decode()

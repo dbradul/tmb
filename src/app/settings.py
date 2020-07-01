@@ -168,8 +168,11 @@ AUTH_USER_MODEL = 'account.User'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATICFILES_DIRS =[
+SESSION_COOKIE_AGE = 2*3600
+
+STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
-SESSION_COOKIE_AGE = 2*3600
+TEST_RUNNER = "redgreenunittest.django.runner.RedGreenDiscoverRunner"
+FIXTURE_DIRS = (os.path.join(BASE_DIR, 'tests/fixtures'),)

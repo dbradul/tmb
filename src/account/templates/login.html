@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+      <button type="submit" class="btn btn-success">Login</button>
+      <button formaction="{% url 'index' %}" type="submit" class="btn btn-light">Cancel</button>
+    </form>
+{% endblock %}

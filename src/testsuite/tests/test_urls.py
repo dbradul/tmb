@@ -11,19 +11,15 @@ class UrlsAvailabilityTests(TestCase):
         self.client = Client()
 
     def test_public_url(self):
-        response = self.client.get(reverse('registration'))
+        response = self.client.get(reverse('index'))
         assert response.status_code == 200
-        assert 'Register' in response.content.decode()
+        assert 'Welcome to TMB!' in response.content.decode()
 
-        response = self.client.get(reverse('login'))
+        response = self.client.get(reverse('test:list'))
         assert response.status_code == 200
-        assert 'Login' in response.content.decode()
+        assert 'Test list' in response.content.decode()
 
     def test_private_urls(self):
-        response = self.client.get(reverse('profile'))
-        assert response.url.startswith(reverse('login'))
-        assert response.status_code == 302
-
-        response = self.client.get(reverse('logout'))
+        response = self.client.get(reverse('leaderboard'))
         assert response.url.startswith(reverse('login'))
         assert response.status_code == 302
