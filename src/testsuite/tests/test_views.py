@@ -17,6 +17,7 @@ class BaseFlowTest(TestCase):
         self.client = Client()
         self.client.login(username='admin', password='admin')
 
+
     def test_basic_flow(self):
         response = self.client.get(reverse('test:start', kwargs={'pk': PK}))
         assert response.status_code == 200
@@ -36,10 +37,9 @@ class BaseFlowTest(TestCase):
                     'answer_1': "1"
                 }
             )
-            if step == questions_count:
-                assert response.status_code == 200
+            if step < questions_count:
+                self.assertRedirects(response, url)
             else:
-                assert response.status_code == 302
-                assert response.url == url
+                assert response.status_code == 200
 
         assert 'START ANOTHER TEST ▶' in response.content.decode()

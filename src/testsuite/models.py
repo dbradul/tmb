@@ -89,7 +89,7 @@ class TestResult(models.Model):
         self.is_completed = True
 
     def __str__(self):
-        return f'{self.test.title}, {self.user.full_name()}, {self.datetime_run}'
+        return f'{self.test.title}, {self.user.get_full_name()}, {self.datetime_run}'
 
 
 class TestResultDetail(models.Model):

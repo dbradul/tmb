@@ -6,9 +6,9 @@ from testsuite.models import Question, Test
 
 
 class TestForm(ModelForm):
-    model = Test
 
     class Meta:
+        model = Test
         fields = '__all__'
 
     def clean(self):
@@ -16,10 +16,11 @@ class TestForm(ModelForm):
 
 
 class QuestionForm(ModelForm):
-    model = Question
 
     class Meta:
+        model = Question
         fields = '__all__'
+
 
     def clean(self):
         pass
