@@ -11,19 +11,21 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
+
+load_dotenv(os.environ.get('ENV_CONFIG', ''))
+# load_dotenv(os.path.join(BASE_DIR, 'app/settings/environment/dev.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-0yxc+tz20_k2vtdr=i$%w66n+)+^s@nkcv!mpri@mc=a#m5ja'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -38,8 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'debug_toolbar',
-    'django_extensions',
     'crispy_forms',
 
     'account',
@@ -54,8 +54,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -129,35 +127,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-LOGGING = {
-    'version': 1,
-    'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        }
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-        }
-    }
-}
-
-
-INTERNAL_IPS = [
-    # ...
-    '127.0.0.1',
-    # ...
-]
-
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = '/'
@@ -173,6 +142,3 @@ SESSION_COOKIE_AGE = 2*3600
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
-
-TEST_RUNNER = "redgreenunittest.django.runner.RedGreenDiscoverRunner"
-FIXTURE_DIRS = (os.path.join(BASE_DIR, 'tests/fixtures'),)
