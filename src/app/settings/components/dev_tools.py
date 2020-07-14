@@ -1,8 +1,5 @@
 from app.settings.components.base import *
 
-DEBUG = True
-
-SECRET_KEY = os.environ['SECRET_KEY']
 
 INSTALLED_APPS += [
     'debug_toolbar',

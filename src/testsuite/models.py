@@ -33,6 +33,12 @@ class Test(models.Model):
     def questions_count(self):
         return self.questions.count()
 
+    def runs_count(self):
+        return self.test_results.count()
+
+    def best_run(self):
+        return self.test_results.order_by('-avr_score').first()
+
     def last_run(self):
         last_run = self.test_results.order_by('-id').first()
         if last_run:
@@ -84,12 +90,27 @@ class TestResult(models.Model):
             for entry in qs
         )
 
+    def correct_answers_count(self):
+        qs = self.test_result_details.values('question').annotate(
+            num_answers=Count('answer'),
+            score=Sum('is_correct')
+        )
+        return sum(
+            int(entry['score']) == entry['num_answers']
+            for entry in qs
+        )
+
     def finish(self):
         self.update_score()
         self.is_completed = True
 
+    def score_info(self):
+        correct_answers_count = self.correct_answers_count()
+        questions_count = self.test.questions_count()
+        return f'{correct_answers_count} of {questions_count} ({correct_answers_count/questions_count*100:.2f}%)'
+
     def __str__(self):
-        return f'{self.test.title}, {self.user.get_full_name()}, {self.datetime_run}'
+        return f'{self.test} run by {self.user.get_full_name()} at {self.datetime_run}'
 
 
 class TestResultDetail(models.Model):
@@ -99,10 +120,4 @@ class TestResultDetail(models.Model):
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'Test Run: {self.test_result.id}, Question: {self.question.text}, Success: {self.is_correct}'
-
-#
-# class TestSale(models.Model):
-#     store_id = models.PositiveSmallIntegerField()
-#     sold_on = models.DateField(auto_now_add=True)
-#     sum = models.DecimalField(max_digits=6, decimal_places=2)
+        return f'Test Result: {self.test_result.id}, Question: {self.question.id}, Success: {self.is_correct}'

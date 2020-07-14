@@ -39,10 +39,7 @@ class TestRunView(View):
 
         question = Question.objects.get(test__id=pk, number=testresult_step)
 
-        answers = [
-            answer.text
-            for answer in question.answers.all()
-        ]
+        answers = question.answers.values_list('text', flat=True)
 
         return render(
             request=request,

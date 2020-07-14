@@ -27,8 +27,8 @@
 
             {% for user in object_list %}
                 <tr>
-                    <td><img class="rounded-circle p-1 m-1" width="150" height="150"  src="{{ user.image.url }}"></td>
-                    <td> {{ user.full_name }}</td>
+                    <td><img class="rounded-circle p-1 m-1" width="55" height="55"  src="{{ user.image.url }}"></td>
+                    <td> {{ user.get_full_name }}</td>
                     <td> {{ user.points }}</td>
                     <td> {{ user.score_info }}</td>
 {#                    <td> <img src="{% static 'common/level_.png' %}" height="30px" width="40px"/> </td>#}

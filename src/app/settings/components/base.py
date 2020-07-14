@@ -18,11 +18,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.pa
 
 
 load_dotenv(os.environ.get('ENV_CONFIG', ''))
-# load_dotenv(os.path.join(BASE_DIR, 'app/settings/environment/dev.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False

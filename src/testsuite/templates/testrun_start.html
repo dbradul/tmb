@@ -3,12 +3,11 @@
 
 {% block title %}
     {{ block.super }}
+    {{ test }}
 {% endblock %}
 
 
 {% block content %}
-
-
 
     <div class="container">
         <div class="row">
@@ -16,7 +15,7 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th>{{ test.title }}</th>
+                        <th>Test info</th>
                         <th></th>
                       </tr>
                     </thead>
@@ -27,11 +26,11 @@
                       </tr>
                       <tr>
                         <td>Num of runs</td>
-                        <td>13</td>
+                        <td>{{ test.runs_count }}</td>
                       </tr>
                       <tr>
                         <td>Best result</td>
-                        <td>9 (user: Admin)</td>
+                        <td>{{ test.best_run.avr_score }} (user: {{ test.best_run.user }})</td>
                       </tr>
                       <tr>
                         <td>Last run</td>
