@@ -1,4 +1,5 @@
-from app.settings.components.base import *
+# from app.settings.components.base import *
+import os
 
 EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_PORT = os.environ['EMAIL_PORT']

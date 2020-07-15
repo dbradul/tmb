@@ -1,5 +1,6 @@
-from app.settings.components.base import *
-
+import os
+from app.settings.components.base import INSTALLED_APPS, MIDDLEWARE, BASE_DIR
+#from app.settings.components.base import *
 
 INSTALLED_APPS += [
     'debug_toolbar',

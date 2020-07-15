@@ -1,4 +1,5 @@
-from app.settings.components.base import *
+#from app.settings.components.base import *
+import os
 
 DATABASES = {
     'default': {
@@ -6,6 +7,6 @@ DATABASES = {
         'NAME': os.environ['DB_NAME'],
         'HOST': os.environ['DB_HOST'],
         'USER': os.environ['DB_USER'],
-        'PASS': os.environ['DB_PASS'],
+        'PASSWORD': os.environ['DB_PASS'],
     }
 }

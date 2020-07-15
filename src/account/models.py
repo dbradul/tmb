@@ -1,7 +1,7 @@
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Func, F, Value, IntegerField, Case, When
 
 from testsuite.models import TestResultDetail
 
@@ -24,7 +24,13 @@ class User(AbstractUser):
                 'test_result',
                 'question')\
             .annotate(
-                answers=Sum('is_correct'),
+                answers=Sum(
+                    Case(
+                        When(is_correct=1, then=1),
+                        output_field=IntegerField()
+                    )
+                ),
+                # answers=Sum('is_correct'),
                 questions=Count('question')
         )
         self.correct_answers = sum(result['answers'] == result['questions'] for result in results)

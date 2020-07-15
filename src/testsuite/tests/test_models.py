@@ -62,3 +62,16 @@ class TestModelExtendedTests(TestCase):
 
         self.assertLess(prev_last_run, new_last_run)
         self.assertLess(utc_now, new_last_run)
+
+    def test_result_details_created(self):
+        test = Test.objects.first()
+        time_before_test_run = datetime.datetime.now(tz=datetime.timezone.utc)
+
+        test_results_before_run = len(test.test_results.all())
+        self._run_test(test)
+        test_results_after_run = len(test.test_results.all())
+        self.assertEqual(test_results_after_run, test_results_before_run + 1)
+
+        recent_test_result = test.test_results.order_by('-id').first()
+        self.assertLess(time_before_test_run, recent_test_result.datetime_run)
+
