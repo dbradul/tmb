@@ -27,7 +27,7 @@ class LeaderBoardView(LoginRequiredMixin, ListView):
     login_url = reverse_lazy('login')
 
 
-class TestRunView(View):
+class TestRunView(LoginRequiredMixin, View):
     PREFIX = 'answer_'
 
     def get(self, request, pk):
@@ -110,7 +110,7 @@ class TestRunView(View):
             )
 
 
-class StartTestView(View):
+class StartTestView(LoginRequiredMixin, View):
 
     def get(self, request, pk):
         test = Test.objects.get(id=pk)
