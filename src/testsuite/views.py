@@ -19,7 +19,7 @@ class TestSuiteListView(ListView):
     paginate_by = 5
 
 
-class LeaderBoardView(LoginRequiredMixin, ListView):
+class LeaderBoardView(ListView):
     model = User
     queryset = User.objects.order_by('-avr_score').all()
     paginate_by = 5
@@ -27,7 +27,7 @@ class LeaderBoardView(LoginRequiredMixin, ListView):
     login_url = reverse_lazy('login')
 
 
-class TestRunView(LoginRequiredMixin, View):
+class TestRunView(View):
     PREFIX = 'answer_'
 
     def get(self, request, pk):
@@ -110,7 +110,7 @@ class TestRunView(LoginRequiredMixin, View):
             )
 
 
-class StartTestView(LoginRequiredMixin, View):
+class StartTestView(View):
 
     def get(self, request, pk):
         test = Test.objects.get(id=pk)

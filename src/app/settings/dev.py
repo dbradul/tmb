@@ -4,4 +4,6 @@ from app.settings.components.dev_tools import * # noqa
 
 DEBUG = True
 
+ALLOWED_HOSTS = ['*']
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'cdn/static')
