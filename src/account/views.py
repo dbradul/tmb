@@ -3,11 +3,11 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.mail import send_mail
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, FormView
 
-from account.forms import AccountRegistrationForm, AccountProfileForm
-from account.models import User
+from account.forms import AccountRegistrationForm, AccountProfileForm, ContactUs
 
 
 class CreateAccountView(SuccessMessageMixin, CreateView):
@@ -21,6 +21,7 @@ class CreateAccountView(SuccessMessageMixin, CreateView):
         result = super().form_valid(form)
         messages.success(self.request, "Great! New user has been successfully created!")
         return result
+
 
 class AccountLoginView(LoginView):
     template_name = 'login.html'
@@ -38,6 +39,7 @@ class AccountLogoutView(LoginRequiredMixin, LogoutView):
     extra_context = {'title': 'Logged out from TMB'}
     login_url = reverse_lazy('login')
 
+
 class AccountProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'profile.html'
     extra_context = {'title': 'Edit current user profile'}
@@ -47,3 +49,25 @@ class AccountProfileView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, *args):
         return self.request.user
+
+
+class ContactUsView(FormView):
+    template_name = 'contact_us.html'
+    extra_context = {'title': 'Send us a message!'}
+    success_url = reverse_lazy('index')
+    form_class = ContactUs
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            send_mail(
+                subject=form.cleaned_data['subject'],
+                message=form.cleaned_data['message'] + request.user.email,
+                from_email=settings.EMAIL_HOST_USER,
+                # from_email=request.user.email,
+                recipient_list=[settings.EMAIL_HOST_USER],
+                fail_silently=False,
+            )
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)

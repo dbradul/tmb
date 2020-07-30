@@ -1,5 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.core.exceptions import ValidationError
+from django.forms import Form, fields
+from django import forms
 
 from account.models import User
 
@@ -18,7 +20,6 @@ class AccountRegistrationForm(UserCreationForm):
             raise ValidationError('Email already exists')
 
         return email
-
 
 
 class AccountProfileForm(UserChangeForm):
@@ -40,46 +41,7 @@ class AccountProfileForm(UserChangeForm):
         return email
 
 
-#
-# class UserProfileUpdateForm(ModelForm):
-#     class Meta:
-#         model = UserProfile
-#         fields = ['image']
+class ContactUs(Form):
+    subject = fields.CharField(max_length=256, empty_value='Message from TMB')
+    message = fields.CharField(widget=forms.Textarea)
 
-
-# class UserAccountProfileForm(ModelForm):
-#
-#     class Meta:
-#         model = UserProfile
-#
-#         fields = '__all__'
-#
-#     def clean_email(self):
-#
-#         email = self.cleaned_data['email']
-#
-#         if User.objects.all().filter(email=email).exclude(id=self.instance.id).exists():
-#             raise ValidationError('Email already exists')
-#
-#         return email
-#
-#     def clean(self):
-#         return super().clean()
-#
-#
-#     def save(self, commit=True):
-#         return super().save(commit)
-
-
-#
-# class UserAccountProfileForm2(ModelForm):
-#
-#     class Meta:
-#         model = UserProfile
-#         exclude = ()
-#
-#
-# UserAccountProfileFormSet = inlineformset_factory(
-#     User, UserProfile, form=UserAccountProfileForm2,
-#     fields=['image'], can_delete=False
-#     )

@@ -37,8 +37,16 @@ urlpatterns += \
     static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
+handler404 = 'testsuite.common.page_not_found_404'
+handler500 = 'testsuite.common.error_500'
+handler403 = 'testsuite.common.permission_denied_403'
+handler400 = 'testsuite.common.bad_request_400'
+
+
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
+
+

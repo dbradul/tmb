@@ -67,6 +67,7 @@ class BaseFlowTest(TestCase):
         test_result = TestResult.objects.order_by('-id').first()
         self.assertEqual(test.questions_count(), test_result.avr_score)
 
+
     def test_continue_button(self):
         response = self.client.get(reverse('test:start', kwargs={'pk': PK}))
         assert response.status_code == 200
