@@ -25,17 +25,49 @@ class BaseFlowTest(TestCase):
         response = requests.post(url, {'username': 'Admin', 'password': 'admin'})
         self.assertEqual(200, response.status_code)
 
+    def __test_stress(self):
+        TOTAL_TESTS = 1000
 
-    def test_stress(self):
+        response = self.client.get(
+            path=reverse('test:start', kwargs={'pk': PK})
+        )
+        self.assertEqual(200, response.status_code)
+
+        test = Test.objects.get(pk=PK)
+        questions = test.questions.all()
+        url = reverse('test:next', kwargs={'pk': PK})
+
+
+        for i in range(TOTAL_TESTS):
+            for idx, question in enumerate(questions, 1):
+                response = self.client.get(url)
+                correct_answers = {
+                    f'answer_{idx}' : '1'
+                    for idx, answer in enumerate(question.answers.all(), 1)
+                    if answer.is_correct
+                }
+                response = self.client.post(
+                    url,
+                    data=correct_answers,
+                )
+                #self.assertEqual(200, response.status_code)
+
+            # test_result = TestResult.objects.order_by('-id').first()
+            self.assertEqual(200, response.status_code)#test.questions_count(), test_result.avr_score)
+            print(f'Tests passed: {i}/{TOTAL_TESTS}')
+
+
+    def test_stress2(self):
+        # self._authenticate()
         COOKIES = {
-            'sessionid': 'v4px90h0rkkncm5ksnr0vzpe2lr4an1f',
-            'csrftoken': 'Ka43DM1c8be87cdmvGD15oUVJg180N1NrXazGPVAgsJRDTvjJzQvVvrA81U58KRK'
+            'sessionid': 'dhvqzyxkfof8gi84woubslcm47l2ffam',
+            'csrftoken': '14cDp7ieubzKOPIJfcyJTTjJHdGg5GgOlgjwnISaqwHo6goMNEK97L8OhSJeKQtj'
         }
         # self._authenticate()
         url = f"{URL_BASE}{reverse('test:start', kwargs={'pk': PK})}"
         response = requests.get(
             url=url,
-            # cookies=COOKIES
+            cookies=COOKIES
         )
         self.assertEqual(200, response.status_code)
         # self.client.get(reverse('test:start', kwargs={'pk': PK}))
@@ -45,7 +77,7 @@ class BaseFlowTest(TestCase):
         url = f"{URL_BASE}{reverse('test:next', kwargs={'pk': PK})}"
 
         for idx, question in enumerate(questions, 1):
-            requests.get(url)#, cookies=COOKIES)
+            response = requests.get(url, cookies=COOKIES)
             correct_answers = {
                 f'answer_{idx}' : '1'
                 for idx, answer in enumerate(question.answers.all(), 1)
@@ -54,7 +86,7 @@ class BaseFlowTest(TestCase):
             response = requests.post(
                 url=url,
                 data=correct_answers,
-                # cookies=COOKIES
+                cookies=COOKIES
             )
             self.assertEqual(200, response.status_code)
 
