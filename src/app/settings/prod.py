@@ -5,7 +5,7 @@ from app.settings.components.email import * # noqa
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(':')
 
 STATIC_ROOT = '/var/www/tmb/static'
 

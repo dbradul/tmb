@@ -14,7 +14,7 @@ services:
     volumes:
       - ./src:/opt/project
       - ./commands:/opt/project/commands
-      - static_content:/var/www/html
+      - static_content:/var/www/tmb
 #    env_file:
 #      - ./src/app/settings/.env
     env_file:
@@ -39,7 +39,7 @@ services:
     container_name: nginx
     volumes:
       - ./nginx:/etc/nginx/conf.d
-      - static_content:/var/www/html
+      - static_content:/var/www/tmb
     ports:
       - "80:80"
       - "443:443"
