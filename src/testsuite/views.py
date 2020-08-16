@@ -1,6 +1,7 @@
 import datetime
 
 from django.contrib import messages
+from django.conf import settings
 from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
@@ -137,5 +138,6 @@ class StartTestView(LoginRequiredMixin, View):
         )
 
 def slow_func(request):
-    run_slow().delay()
+    run_slow.delay(2)
     return HttpResponse('DONE!')
+
